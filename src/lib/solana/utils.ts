@@ -1,6 +1,7 @@
 import { Connection, PublicKey } from "@solana/web3.js";
 import * as anchor from "@coral-xyz/anchor";
 import {getMint } from "@solana/spl-token";
+import { AnchorWallet } from "@solana/wallet-adapter-react";
 
 const DEVNET_URL = 'https://api.devnet.solana.com';
 const PROGRAM_ID = "FkFy7DjX1fJe4fUqxkeUnGtkd4rL46769HE3iSwVjoYJ"
@@ -61,7 +62,7 @@ export async function getPoolReservesAndSupply(tokenA: string, tokenB: string) {
 
     const idl = await anchor.Program.fetchIdl(programId, { connection });
     if (!idl) throw new Error("Failed to fetch IDL");
-    const provider = new anchor.AnchorProvider(connection, {} as any, anchor.AnchorProvider.defaultOptions());
+    const provider = new anchor.AnchorProvider(connection, {} as AnchorWallet, anchor.AnchorProvider.defaultOptions());
     const program = new anchor.Program(idl, provider);
 
     const pool = await program.account.pool.fetch(poolPDA);

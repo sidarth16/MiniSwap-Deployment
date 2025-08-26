@@ -7,6 +7,7 @@ import { PhantomWalletAdapter } from '@solana/wallet-adapter-wallets';
 import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
 import dynamic from 'next/dynamic';
 import '@solana/wallet-adapter-react-ui/styles.css';
+import Link from 'next/link';
 
 // Dynamically import WalletMultiButton (client-only)
 const WalletMultiButton = dynamic(
@@ -39,10 +40,10 @@ export default function RootLayout({ children }: { children: ReactNode }) {
 
                   {/* Nav links */}
                   <nav className="hidden md:flex gap-8 text-lg font-semibold">
-                    <a href="/" className="hover:text-yellow-300 transition">Home</a>
-                    <a href="/?form=add" className="hover:text-yellow-300 transition">Add Liquidity</a>
-                    <a href="/?form=remove" className="hover:text-yellow-300 transition">Remove Liquidity</a>
-                    <a href="/?form=swap" className="hover:text-yellow-300 transition">Swap</a>
+                    <Link href="/" className="hover:text-yellow-300 transition">Home</Link>
+                    <Link href="/?form=add" className="hover:text-yellow-300 transition">Add Liquidity</Link>
+                    <Link href="/?form=remove" className="hover:text-yellow-300 transition">Remove Liquidity</Link>
+                    <Link href="/?form=swap" className="hover:text-yellow-300 transition">Swap</Link>
                   </nav>
 
                   {/* Wallet Button */}

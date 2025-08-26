@@ -124,7 +124,19 @@ function HomeInfoForm({poolStatus,  tokenA,  tokenB}: {poolStatus: -1 | 0 | 1 | 
 /* ----------------------------------------------
    Add Liquidity Form Component (with labels)
 ------------------------------------------------ */
-function AddLiquidityForm({handleAction,  poolStatus,  tokenA,  tokenB,  amountA,  setAmountA,  amountB,  setAmountB,  disabled,}: any) {
+function AddLiquidityForm(
+  {handleAction,  poolStatus,  tokenA,  tokenB,  amountA,  setAmountA,  amountB,  setAmountB,  disabled,}: 
+  {
+  handleAction: (action: 'add') => void;
+  poolStatus: -1 | 0 | 1 | null;
+  tokenA: string;
+  tokenB: string;
+  amountA: string;
+  setAmountA: (v: string) => void;
+  amountB: string;
+  setAmountB: (v: string) => void;
+  disabled: boolean;
+  }) {
   const [estimatedLP, setEstimatedLP] = useState<string | null>(null);
   const [reserves, setReserves] = useState<{ vaultA: bigint; vaultB: bigint; supplyLP: bigint; tokenADecimals:number; tokenBDecimals: number; } | null>(null);
   const [lastEdited, setLastEdited] = useState<"A" | "B" | null>(null);
@@ -271,7 +283,15 @@ function AddLiquidityForm({handleAction,  poolStatus,  tokenA,  tokenB,  amountA
 /* ----------------------------------------------
   Remove Liquidity Form Component (with labels)
 ------------------------------------------------ */
-function RemoveLiquidityForm({handleAction,  poolStatus,  tokenA,  tokenB,  amountLP,  setAmountLP,  disabled,}: any) {
+function RemoveLiquidityForm({handleAction,  poolStatus,  tokenA,  tokenB,  amountLP,  setAmountLP,  disabled,}: {
+  handleAction: (action: 'remove') => void;
+  poolStatus: -1 | 0 | 1 | null;
+  tokenA: string;
+  tokenB: string;
+  amountLP: string;
+  setAmountLP: (v: string) => void;
+  disabled: boolean;
+}) {
   const [reserves, setReserves] = useState<{ vaultA: bigint; vaultB: bigint; supplyLP: bigint; tokenADecimals:number; tokenBDecimals: number; } | null>(null);
   const [estimatedTokens, setEstimatedTokens] = useState<{ amountA: bigint; amountB: bigint } | null>(null);
 
@@ -360,7 +380,19 @@ function RemoveLiquidityForm({handleAction,  poolStatus,  tokenA,  tokenB,  amou
 /* ----------------------------------------------
   Swap Tokens Form Component (styled)
 ------------------------------------------------ */
-function SwapTokensForm({handleAction,  poolStatus,  tokenA,  tokenB,  amountSwapIn,  setAmountSwapIn,  tokenSwapIn,  setTokenSwapIn,  amountMinSwapOut,  setAmountMinSwapOut,  disabled,}: any) {
+function SwapTokensForm({handleAction,  poolStatus,  tokenA,  tokenB,  amountSwapIn,  setAmountSwapIn,  tokenSwapIn,  setTokenSwapIn,  amountMinSwapOut,  setAmountMinSwapOut,  disabled,}: {
+  handleAction: (action: 'swap') => void;
+  poolStatus: -1 | 0 | 1 | null;
+  tokenA: string;
+  tokenB: string;
+  amountSwapIn: string;
+  setAmountSwapIn: (v: string) => void;
+  tokenSwapIn:string;
+  setTokenSwapIn: (v: string) => void;
+  amountMinSwapOut: string;
+  setAmountMinSwapOut: (v: string) => void;
+  disabled: boolean;
+}) {
   const [reserves, setReserves] = useState<{ vaultA: bigint; vaultB: bigint; supplyLP: bigint; tokenADecimals:number; tokenBDecimals: number; } | null>(null);
   const [estimatedTokensOut, setEstimatedTokensOut] = useState< bigint | null>(null);
 
@@ -387,7 +419,7 @@ function SwapTokensForm({handleAction,  poolStatus,  tokenA,  tokenB,  amountSwa
     }
     try {
       if (tokenSwapIn === tokenA){
-          let estAmts = estimateSwappedTokenOut(
+          const estAmts = estimateSwappedTokenOut(
             reserves.vaultA,
             reserves.vaultB,
             BigInt(amountSwapIn)
@@ -397,7 +429,7 @@ function SwapTokensForm({handleAction,  poolStatus,  tokenA,  tokenB,  amountSwa
           }
       }
       if (tokenSwapIn === tokenB){
-          let estAmts = estimateSwappedTokenOut(
+          const estAmts = estimateSwappedTokenOut(
             reserves.vaultB,
             reserves.vaultA,
             BigInt(amountSwapIn)
@@ -589,7 +621,7 @@ function ActionForms({
 ------------------------------------------------ */
 export default function HomePage() {
   const wallet = useAnchorWallet();
-  let connected = !!wallet?.publicKey;
+  const connected = !!wallet?.publicKey;
 
   const [activeForm, setActiveForm] = useState< 'home' | 'add' | 'remove' | 'swap' | null>('home');
   const [tokenA, setTokenA] = useState('H68y5nKjyc8ESB6dn7syQ1FWn1axU7DYDB5VE9MTAU2c');
@@ -651,21 +683,22 @@ export default function HomePage() {
     
     if (poolStatus === 0) {
       if (action === 'init') {
-      try {
-        console.log("Initializing Pool:", { tokenA, tokenB});
-        const txSig = await handleInitPool(
-          tokenA, tokenB, wallet
-        );
-        console.log("Tx signature:", txSig);
-        setTxSig(txSig);
-        const exists = await checkPoolOnDevnet(tokenA, tokenB);
-        setPoolStatus(exists ? 1 : 0);
-      } 
-      catch (err: any) {
-        console.error("Remove liquidity failed:", err);
-        setError(err.message || 'Transaction failed');
+        try {
+          console.log("Initializing Pool:", { tokenA, tokenB});
+          const txSig = await handleInitPool(
+            tokenA, tokenB, wallet
+          );
+          console.log("Tx signature:", txSig);
+          setTxSig(txSig);
+          const exists = await checkPoolOnDevnet(tokenA, tokenB);
+          setPoolStatus(exists ? 1 : 0);
+        } 
+        catch (err: unknown) {
+          console.error("Remove liquidity failed:", err);
+          if (err instanceof Error) setError(err.message || 'Transaction failed');
+          setError(String(err) || 'Transaction failed');
+        }
       }
-    }
     }
 
     if (poolStatus !== 1) {
@@ -677,14 +710,15 @@ export default function HomePage() {
       try {
         console.log("Adding liquidity:", { tokenA, tokenB, amountA, amountB });
         const txSig = await handleAddLiquidity(
-          tokenA, tokenB, Number(amountA), Number(amountB), wallet, wallet.publicKey
+          tokenA, tokenB, Number(amountA), Number(amountB), wallet
         );
         console.log("Tx signature:", txSig);
         setTxSig(txSig);
       } 
-      catch (err: any) {
+      catch (err: unknown) {
         console.error("Add liquidity failed:", err);
-        setError(err.message || 'Transaction failed');
+        if (err instanceof Error) setError(err.message || 'Transaction failed');
+        setError(String(err) || 'Transaction failed');
       }
     }
 
@@ -697,9 +731,10 @@ export default function HomePage() {
         console.log("Tx signature:", txSig);
         setTxSig(txSig);
       } 
-      catch (err: any) {
+      catch (err: unknown) {
         console.error("Remove liquidity failed:", err);
-        setError(err.message || 'Transaction failed');
+        if (err instanceof Error) setError(err.message || 'Transaction failed');
+        setError(String(err) || 'Transaction failed');
       }
     }
 
@@ -711,9 +746,10 @@ export default function HomePage() {
         console.log("Tx signature:", txSig);
         setTxSig(txSig);
       } 
-      catch (err: any) {
+      catch (err:unknown) {
         console.error("Swap Tokens failed:", err);
-        setError(err.message || 'Transaction failed');
+        if (err instanceof Error) setError(err.message || 'Transaction failed');
+        setError(String(err) || 'Transaction failed');
       }
     }
   };

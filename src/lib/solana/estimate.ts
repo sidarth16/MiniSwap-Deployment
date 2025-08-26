@@ -70,8 +70,8 @@ export function estimateWithdrawTokenAmounts(
   console.log("Vault B:", vaultA.toString());
   console.log("LP Supply:", supplyLP.toString());
 
-  let amountA = (vaultA * amountLpBurn) / supplyLP;
-  let amountB = (vaultB * amountLpBurn) / supplyLP;
+  const amountA = (vaultA * amountLpBurn) / supplyLP;
+  const amountB = (vaultB * amountLpBurn) / supplyLP;
   console.log("Withdraw Token A:", amountA.toString());
   console.log("Withdraw Token B:", amountB.toString());  
 
@@ -87,10 +87,10 @@ export function estimateSwappedTokenOut(
   console.log("Vault A:", x.toString());
   console.log("Vault B:", y.toString());
   
-  let k = x * y;
-  let newX = x + amountSwapIn;
-  let newY = k / newX;
-  let amountOut = y - newY;
+  const k = x * y;
+  const newX = x + amountSwapIn;
+  const newY = k / newX;
+  const amountOut = y - newY;
   console.log("Withdraw Token B amount :", amountOut.toString());  
   return amountOut;
 }

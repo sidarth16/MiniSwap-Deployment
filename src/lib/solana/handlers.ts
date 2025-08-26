@@ -1,10 +1,9 @@
 import { Connection, PublicKey, Transaction } from "@solana/web3.js";
+import { AnchorWallet } from "@solana/wallet-adapter-react";
 import * as anchor from "@coral-xyz/anchor";
-import {BN} from "@coral-xyz/anchor";
 import * as estimate from "@/lib/solana/estimate"
 
-import { TOKEN_PROGRAM_ID, getMint, getAssociatedTokenAddress, createAssociatedTokenAccountInstruction } from "@solana/spl-token";
-
+import { TOKEN_PROGRAM_ID, getAssociatedTokenAddress, createAssociatedTokenAccountInstruction } from "@solana/spl-token";
 
 const DEVNET_URL = 'https://api.devnet.solana.com';
 const PROGRAM_ID = "FkFy7DjX1fJe4fUqxkeUnGtkd4rL46769HE3iSwVjoYJ"
@@ -32,7 +31,7 @@ async function getOrCreateATA(mint: PublicKey, owner: PublicKey, provider: ancho
 export async function handleInitPool(
     tokenA: string,
     tokenB: string,
-    wallet: any,
+    wallet: AnchorWallet,
 ) {
     if (!wallet || !wallet.publicKey) throw new Error("Wallet not connected");
     
@@ -114,20 +113,15 @@ export async function handleAddLiquidity(
     tokenB: string,
     amountA: number,
     amountB: number,
-    wallet: any,
-    publicKey: PublicKey
+    wallet: AnchorWallet
 ) {
-    if (!wallet || !publicKey) throw new Error("Wallet not connected");
+    if (!wallet || !wallet.publicKey) throw new Error("Wallet not connected");
     
     try{
         console.log(1);
         const provider = new anchor.AnchorProvider(
             connection, 
-            {
-                publicKey,
-                signTransaction: wallet.signTransaction?.bind(wallet),
-                signAllTransactions: wallet.signAllTransactions?.bind(wallet),
-            }, 
+            wallet, 
             anchor.AnchorProvider.defaultOptions()
         );
         const idl = await anchor.Program.fetchIdl(PROGRAM_ID, provider);
@@ -162,11 +156,11 @@ export async function handleAddLiquidity(
         const tokenBDecimals:number = pool.tokenBDecimals;
 
         // Derive user token accounts (ATAs)
-        const userTokenA = await getOrCreateATA(tokenAPub, publicKey, provider);
+        const userTokenA = await getOrCreateATA(tokenAPub, wallet.publicKey, provider);
         console.log("User Token A ATA:", userTokenA.toBase58());
-        const userTokenB = await getOrCreateATA(tokenBPub, publicKey, provider);
+        const userTokenB = await getOrCreateATA(tokenBPub, wallet.publicKey, provider);
         console.log("User Token B ATA:", userTokenB.toBase58());
-        const userLP = await getOrCreateATA(pool.lpMint, publicKey, provider);
+        const userLP = await getOrCreateATA(pool.lpMint, wallet.publicKey, provider);
         console.log("User LP Token ATA:", userLP.toBase58());
 
         const vaultA = BigInt((await connection.getTokenAccountBalance(pool.tokenAVault)).value.amount);
@@ -190,9 +184,7 @@ export async function handleAddLiquidity(
             tokenBVault: pool.tokenBVault,
             lpMint: pool.lpMint,
             userLpToken: userLP,
-            tokenProgram: program.provider.connection._rpcEndpoint
-            ? TOKEN_PROGRAM_ID
-            : undefined,
+            tokenProgram:TOKEN_PROGRAM_ID,
         })
         .rpc();
 
@@ -211,7 +203,7 @@ export async function handleRemoveLiquidity(
     tokenA: string,
     tokenB: string,
     amountLP: number,
-    wallet: any,
+    wallet: AnchorWallet,
 ) {
     if (!wallet || !wallet.publicKey) throw new Error("Wallet not connected");
     
@@ -293,7 +285,7 @@ export async function handleSwapTokens(
     inputToken: string,
     amountSwapIn: number,
     amountMinSwapOut: number,
-    wallet: any,
+    wallet: AnchorWallet,
 ) {
     if (!wallet || !wallet.publicKey) throw new Error("Wallet not connected");
     
