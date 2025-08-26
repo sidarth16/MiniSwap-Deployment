@@ -65,7 +65,8 @@ export async function getPoolReservesAndSupply(tokenA: string, tokenB: string) {
     const provider = new anchor.AnchorProvider(connection, {} as AnchorWallet, anchor.AnchorProvider.defaultOptions());
     const program = new anchor.Program(idl, provider);
 
-    const pool = await program.account.pool.fetch(poolPDA);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const pool = await (program.account as any).account.pool.fetch(poolPDA);
 
     const tokenADecimals = pool.tokenADecimals;
     const tokenBDecimals = pool.tokenBDecimals;

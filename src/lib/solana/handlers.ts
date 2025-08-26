@@ -146,7 +146,8 @@ export async function handleAddLiquidity(
         console.log('Pool PDA:', poolPDA.toBase58());
 
         // Fetch pool account (Anchor auto-decodes for you)
-        const pool = await program.account.pool.fetch(poolPDA);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const pool = await (program.account as any).account.pool.fetch(poolPDA);
         console.log("Pool fetched:");
         console.log("Token A Vault:", pool.tokenAVault.toBase58());
         console.log("Token B Vault:", pool.tokenBVault.toBase58());
@@ -231,7 +232,8 @@ export async function handleRemoveLiquidity(
         console.log('Pool PDA:', poolPDA.toBase58());
 
         // Fetch pool account (Anchor auto-decodes for you)
-        const pool = await program.account.pool.fetch(poolPDA);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const pool = await (program.account as any).account.pool.fetch(poolPDA);
         console.log("Token A Vault:", pool.tokenAVault.toBase58());
         console.log("Token B Vault:", pool.tokenBVault.toBase58());
         console.log("LP Mint:", pool.lpMint.toBase58());
@@ -317,7 +319,8 @@ export async function handleSwapTokens(
         console.log('Pool PDA:', poolPDA.toBase58());
 
         // Fetch pool account (Anchor auto-decodes for you)
-        const pool = await program.account.pool.fetch(poolPDA);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const pool = await (program.account as any).account.pool.fetch(poolPDA);
         console.log("Pool fetched:");
         console.log("Token A Vault:", pool.tokenAVault.toBase58());
         console.log("Token B Vault:", pool.tokenBVault.toBase58());
