@@ -264,9 +264,7 @@ export async function handleRemoveLiquidity(
             userLpToken: userLP,
             userTokenA: userTokenA,
             userTokenB: userTokenB,
-            tokenProgram: program.provider.connection._rpcEndpoint
-            ? TOKEN_PROGRAM_ID
-            : undefined,
+            tokenProgram: TOKEN_PROGRAM_ID
         })
         .rpc();
 
@@ -358,9 +356,7 @@ export async function handleSwapTokens(
             tokenBVault: pool.tokenBVault,
             userTokenAAccount: userTokenA,
             userTokenBAccount: userTokenB,
-            tokenProgram: program.provider.connection._rpcEndpoint
-            ? TOKEN_PROGRAM_ID
-            : undefined,
+            tokenProgram: TOKEN_PROGRAM_ID,
         })
         .rpc();
 
