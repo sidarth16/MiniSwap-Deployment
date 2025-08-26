@@ -225,7 +225,7 @@ function AddLiquidityForm(
 
   return (
     <div className="mt-2 p-6 rounded-2xl bg-black/10 backdrop-blur-md border border-white/20 shadow-2xl space-y-4">
-      <h2 className="text-2xl font-bold text-yellow-400 drop-shadow-xl">Add {reserves?.vaultA === BigInt(0) || reserves?.vaultA === BigInt(0)  ? 'Initial' : ''} Liquidity</h2>
+      <h2 className="text-2xl font-bold text-yellow-400 drop-shadow-xl">Add {reserves?.vaultA === BigInt(0) || reserves?.vaultB === BigInt(0)  ? 'Initial' : ''} Liquidity</h2>
 
       {/* Token A */}
       <div className="flex flex-col">
@@ -616,6 +616,9 @@ function ActionForms({
   );
 }
 
+
+"use client";
+export const dynamic = 'force-dynamic';
 /* ----------------------------------------------
   Home Page Component
 ------------------------------------------------ */
