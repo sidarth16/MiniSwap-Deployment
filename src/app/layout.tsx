@@ -32,11 +32,11 @@ export default function RootLayout({ children }: { children: ReactNode }) {
               <header className="sticky top-0 z-50 bg-gradient-to-r from-pink-500/80 via-purple-500/80 to-blue-500/80 backdrop-blur-md border-b border-white/20 shadow-lg">
                 <div className="max-w-7xl mx-auto px-6 py-2 flex justify-between items-center">
                   {/* Logo */}
-                  <a href="/" className="text-3xl font-extrabold tracking-wider drop-shadow-md hover:text-yellow-300 transition">
+                  <Link href="/" className="text-3xl font-extrabold tracking-wider drop-shadow-md hover:text-yellow-300 transition">
                   {/* <h1 className="text-3xl font-extrabold tracking-wider drop-shadow-md"> */}
                     ⌞⚡️⌝ MiniSwap
                   {/* </h1> */}
-                  </a>
+                  </Link>
 
                   {/* Nav links */}
                   <nav className="hidden md:flex gap-8 text-lg font-semibold">
@@ -60,8 +60,8 @@ export default function RootLayout({ children }: { children: ReactNode }) {
 
               {/* FOOTER */}
               <footer className="mt-4 py-6 border-t border-white/20 text-center text-sm text-gray-200">
-                ✨ Miniswap · Made with ❤️ on <span className="text-yellow-300">Solana</span><br/>
-                <span className="text-green-300/80 underline"><a href='https://linktr.ee/sidarthx0'>linktr.ee/sidarthx0</a></span>
+                ✨ MiniSwap · Made with ❤️ on <span className="text-yellow-300">Solana</span><br/>
+                <span className="text-green-300/80 underline"><Link href='https://linktr.ee/sidarthx0'>linktr.ee/sidarthx0</Link></span>
               </footer>
             </WalletModalProvider>
           </WalletProvider>
