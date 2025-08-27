@@ -8,6 +8,7 @@ import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
 import dynamic from 'next/dynamic';
 import '@solana/wallet-adapter-react-ui/styles.css';
 import Link from 'next/link';
+import { Suspense } from "react";
 
 // Dynamically import WalletMultiButton (client-only)
 const WalletMultiButton = dynamic(
@@ -53,9 +54,11 @@ export default function RootLayout({ children }: { children: ReactNode }) {
 
               {/* MAIN */}
               <main className="max-w-5xl mx-auto px-6 py-10">
+                <Suspense fallback={<div>Loading...</div>}>
                 <div className="p- rounded-3xl bg-white/10 backdrop-blur-md shadow-2xl border border-white/20">
                   {children}
                 </div>
+                </Suspense>
               </main>
 
               {/* FOOTER */}

@@ -1,5 +1,5 @@
 'use client';
-
+import { Suspense } from "react";
 import { useState, useEffect } from 'react';
 import { useAnchorWallet } from "@solana/wallet-adapter-react";
 
@@ -66,6 +66,7 @@ function PoolStatus({ poolStatus }: { poolStatus: -1 | 0 | 1 | null }) {
 function HomeInfoForm({poolStatus,  tokenA,  tokenB}: {poolStatus: -1 | 0 | 1 | null; tokenA: string; tokenB: string;}) {
   const [reserves, setReserves] = useState<{ vaultA: bigint; vaultB: bigint; supplyLP: bigint; tokenADecimals:number; tokenBDecimals: number; } | null>(null);
 
+  console.log("Rendering Home Form!");
   // Fetch reserves
   useEffect(() => {
     (async () => {
@@ -80,9 +81,12 @@ function HomeInfoForm({poolStatus,  tokenA,  tokenB}: {poolStatus: -1 | 0 | 1 | 
       }
     })();
   }, [tokenA, tokenB]);
+  // if (!reserves?.tokenADecimals || !reserves?.tokenBDecimals){
+  //   return (<div>Loading Home...</div>)
+  // }
 
   return (
-    <>
+    <div>
     {poolStatus === 1 && reserves && (
     <div className="mt-4 p-6 rounded-3xl bg-black/25 backdrop-blur-lg border border-white/20 shadow-2xl space-y-6">
         <h2 className="text-2xl font-extrabold text-yellow-400 drop-shadow-lg">Pool Info</h2>
@@ -90,19 +94,19 @@ function HomeInfoForm({poolStatus,  tokenA,  tokenB}: {poolStatus: -1 | 0 | 1 | 
           {/* Vault A */}
           <div className="flex justify-between items-center p-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition">
             <span className="text-gray-300 font-medium uppercase tracking-wide">Vault A</span>
-            <span className="text-white font-semibold truncate">{reserves.vaultA} Tokens</span>
+            <span className="text-white font-semibold truncate">{reserves?.vaultA} Tokens</span>
           </div>
 
           {/* Vault B */}
           <div className="flex justify-between items-center p-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition">
             <span className="text-gray-300 font-medium uppercase tracking-wide">Vault B</span>
-            <span className="text-white font-semibold truncate">{reserves.vaultB} Tokens</span>
+            <span className="text-white font-semibold truncate">{reserves?.vaultB} Tokens</span>
           </div>
 
           {/* LP Supply */}
           <div className="flex justify-between items-center p-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition">
             <span className="text-gray-300 font-medium uppercase tracking-wide">LP Supply</span>
-            <span className="text-white font-semibold truncate">{reserves.supplyLP} Tokens</span>
+            <span className="text-white font-semibold truncate">{reserves?.supplyLP} Tokens</span>
           </div>
 
           {/* Decimals */}
@@ -115,8 +119,8 @@ function HomeInfoForm({poolStatus,  tokenA,  tokenB}: {poolStatus: -1 | 0 | 1 | 
           </div>
         </div>
     </div>
-    )}
-    </>
+    )} 
+    </div>
   )
 }
 
@@ -617,8 +621,8 @@ function ActionForms({
 }
 
 
-"use client";
-export const dynamic = 'force-dynamic';
+// "use client";
+// export const dynamic = 'force-dynamic';
 /* ----------------------------------------------
   Home Page Component
 ------------------------------------------------ */
@@ -626,7 +630,7 @@ export default function HomePage() {
   const wallet = useAnchorWallet();
   const connected = !!wallet?.publicKey;
 
-  const [activeForm, setActiveForm] = useState< 'home' | 'add' | 'remove' | 'swap' | null>('home');
+  const [activeForm, setActiveForm] = useState< 'home' | 'add' | 'remove' | 'swap' | null>(null);
   const [tokenA, setTokenA] = useState('H68y5nKjyc8ESB6dn7syQ1FWn1axU7DYDB5VE9MTAU2c');
   const [tokenB, setTokenB] = useState('7ffSz8Yyi7Zy1nLR7L7WSAUH7LcWt9uX1tMvtijD4fqX');
   const [poolStatus, setPoolStatus] = useState<-1 | 0 | 1 | null>(null);
@@ -669,9 +673,9 @@ export default function HomePage() {
   // set form from header navigation
   useEffect(() => {
     if (formParam === "add") setActiveForm("add");
-    if (formParam === "remove") setActiveForm("remove");
-    if (formParam === "swap") setActiveForm("swap");
-    if (formParam === null) setActiveForm("home");
+    else if (formParam === "remove") setActiveForm("remove");
+    else if (formParam === "swap") setActiveForm("swap");
+    else setActiveForm("home");
   }, [formParam]);
 
   const handleAction = async (action: 'add' | 'remove' | 'swap' | 'init') => {
@@ -759,12 +763,8 @@ export default function HomePage() {
 
   // const connected = wallet?.publicKey!=null;
   return (
-    
     // <div className="flex flex-col items-center min-h-screen p-4 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
     <div className="flex flex-col items-center min-h-[70vh] bg-black/10 py-6 rounded-3xl">
-    
-
-    
       <h1 className="text-4xl font-extrabold text-yellow-400 drop-shadow-xl mb-2">⚡️ MiniSwap</h1>
 
       {/* Token inputs */}
