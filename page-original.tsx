@@ -80,6 +80,9 @@ function HomeInfoForm({poolStatus,  tokenA,  tokenB}: {poolStatus: -1 | 0 | 1 | 
       }
     })();
   }, [tokenA, tokenB, poolStatus]);
+  // if (!reserves?.tokenADecimals || !reserves?.tokenBDecimals){
+  //   return (<div>Loading Home...</div>)
+  // }
 
   return (
     <div>
@@ -627,19 +630,19 @@ export default function HomePage() {
   const connected = !!wallet?.publicKey;
 
   const [activeForm, setActiveForm] = useState< 'home' | 'add' | 'remove' | 'swap' | null>(null);
-  const [tokenA, setTokenA] = useState('');
-  const [tokenB, setTokenB] = useState('');
+  const [tokenA, setTokenA] = useState('H68y5nKjyc8ESB6dn7syQ1FWn1axU7DYDB5VE9MTAU2c');
+  const [tokenB, setTokenB] = useState('7ffSz8Yyi7Zy1nLR7L7WSAUH7LcWt9uX1tMvtijD4fqX');
   const [poolStatus, setPoolStatus] = useState<-1 | 0 | 1 | null>(null);
   
   const [error, setError] = useState<string | null>(null);
   const [txSig, setTxSig] = useState<string | null>(null); 
   
-  const [amountA, setAmountA] = useState('');
-  const [amountB, setAmountB] = useState('');
-  const [amountLP, setAmountLP] = useState('');
-  const [amountSwapIn, setAmountSwapIn] = useState('');
+  const [amountA, setAmountA] = useState('10');
+  const [amountB, setAmountB] = useState('10');
+  const [amountLP, setAmountLP] = useState('7');
+  const [amountSwapIn, setAmountSwapIn] = useState('10000');
   const [tokenSwapIn, setTokenSwapIn] = useState(tokenA);
-  const [amountMinSwapOut, setAmountMinSwapOut] = useState('');
+  const [amountMinSwapOut, setAmountMinSwapOut] = useState('1');
 
   const searchParams = useSearchParams();
   const formParam = searchParams.get("form");

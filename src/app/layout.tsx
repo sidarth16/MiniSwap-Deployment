@@ -35,7 +35,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
                   {/* Logo */}
                   <Link href="/" className="text-3xl font-extrabold tracking-wider drop-shadow-md hover:text-yellow-300 transition">
                   {/* <h1 className="text-3xl font-extrabold tracking-wider drop-shadow-md"> */}
-                    ⌞⚡️⌝ MiniSwap
+                    ⚡️ MiniSwap
                   {/* </h1> */}
                   </Link>
 

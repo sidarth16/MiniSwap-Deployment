@@ -1,20 +1,13 @@
 
 import { Connection, PublicKey, SystemProgram } from "@solana/web3.js";
-
 import type { AnchorWallet } from "@solana/wallet-adapter-react";
-
 import type {AnchorProvider} from "@coral-xyz/anchor";
-// import { Program, AnchorProvider, BN } from "@coral-xyz/anchor";
-
 import * as estimate from "@/lib/solana/estimate"
-
-// import { TOKEN_PROGRAM_ID, getAssociatedTokenAddress, createAssociatedTokenAccountInstruction } from "@solana/spl-token";
 
 const DEVNET_URL = 'https://api.devnet.solana.com';
 const PROGRAM_ID = "FkFy7DjX1fJe4fUqxkeUnGtkd4rL46769HE3iSwVjoYJ"
 
 const connection = new Connection(DEVNET_URL, 'confirmed');
-
 
 /* -------------------------------
    Helper: Get or create associated token account

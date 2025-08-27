@@ -1,7 +1,4 @@
 'use client';
-// import { Program, AnchorProvider } from "@coral-xyz/anchor";
-
-// import {getMint } from "@solana/spl-token";
 import type { AnchorWallet } from "@solana/wallet-adapter-react";
 
 const DEVNET_URL = 'https://api.devnet.solana.com';
@@ -16,7 +13,6 @@ export async function isValidSolanaTokenAddress(addr: string): Promise<boolean> 
     const {Connection, PublicKey} = await import("@solana/web3.js");
     const {getMint} = await import("@solana/spl-token");
     const connection = new Connection(DEVNET_URL, 'confirmed');
-
 
     const pubkey = new PublicKey(addr); // throws if invalid
     await getMint(connection, pubkey); //throw if the account doesn't exist OR isn't a mint
