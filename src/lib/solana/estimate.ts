@@ -1,3 +1,5 @@
+'use client';
+
 import {BN} from "@coral-xyz/anchor";
 
 function scaleLiquidityAmounts(

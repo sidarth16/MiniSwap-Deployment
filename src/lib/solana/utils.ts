@@ -1,5 +1,8 @@
+'use client';
+
 import { Connection, PublicKey } from "@solana/web3.js";
-import * as anchor from "@coral-xyz/anchor";
+import { Program, AnchorProvider } from "@coral-xyz/anchor";
+
 import {getMint } from "@solana/spl-token";
 import { AnchorWallet } from "@solana/wallet-adapter-react";
 
@@ -22,7 +25,6 @@ export async function isValidSolanaTokenAddress(addr: string): Promise<boolean> 
     return false;
   }
 }
-
 
 export async function checkPoolOnDevnet(tokenA: string, tokenB: string) {
   // Validate token addresses
@@ -60,10 +62,12 @@ export async function getPoolReservesAndSupply(tokenA: string, tokenB: string) {
       programId
     );
 
-    const idl = await anchor.Program.fetchIdl(programId, { connection });
+    const idl = await Program.fetchIdl(programId, { connection });
     if (!idl) throw new Error("Failed to fetch IDL");
-    const provider = new anchor.AnchorProvider(connection, {} as AnchorWallet, anchor.AnchorProvider.defaultOptions());
-    const program = new anchor.Program(idl, provider);
+    const provider = new AnchorProvider(
+      connection, {} as AnchorWallet, AnchorProvider.defaultOptions()
+    );
+    const program = new Program(idl, provider);
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const pool = await (program.account as any).pool.fetch(poolPDA);

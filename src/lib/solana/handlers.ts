@@ -1,6 +1,8 @@
-import { Connection, PublicKey, Transaction } from "@solana/web3.js";
-import { AnchorWallet } from "@solana/wallet-adapter-react";
-import * as anchor from "@coral-xyz/anchor";
+'use client';
+
+import { Connection, PublicKey, Transaction, SystemProgram } from "@solana/web3.js";
+import type { AnchorWallet } from "@solana/wallet-adapter-react";
+import { Program, AnchorProvider, BN } from "@coral-xyz/anchor";
 import * as estimate from "@/lib/solana/estimate"
 
 import { TOKEN_PROGRAM_ID, getAssociatedTokenAddress, createAssociatedTokenAccountInstruction } from "@solana/spl-token";
@@ -15,7 +17,7 @@ const connection = new Connection(DEVNET_URL, 'confirmed');
    Helper: Get or create associated token account
 --------------------------------- */
 
-async function getOrCreateATA(mint: PublicKey, owner: PublicKey, provider: anchor.AnchorProvider) {
+async function getOrCreateATA(mint: PublicKey, owner: PublicKey, provider: AnchorProvider) {
   const ata = await getAssociatedTokenAddress(mint, owner);
   const accountInfo = await provider.connection.getAccountInfo(ata);
   if (!accountInfo) {
@@ -37,29 +39,29 @@ export async function handleInitPool(
     
     try{
         console.log(1);
-        const provider = new anchor.AnchorProvider(
+        const provider = new AnchorProvider(
             connection, 
             wallet, 
-            anchor.AnchorProvider.defaultOptions()
+            AnchorProvider.defaultOptions()
         );
-        const idl = await anchor.Program.fetchIdl(PROGRAM_ID, provider);
+        const idl = await Program.fetchIdl(PROGRAM_ID, provider);
         if (!idl) throw new Error("Failed to fetch IDL");
         console.log(2);
 
-        const program = new anchor.Program(idl, provider);
+        const program = new Program(idl, provider);
 
         console.log(3);
 
         // Validate addresses
-        const tokenAPub = new anchor.web3.PublicKey(tokenA);
-        const tokenBPub = new anchor.web3.PublicKey(tokenB);
+        const tokenAPub = new PublicKey(tokenA);
+        const tokenBPub = new PublicKey(tokenB);
         console.log("Token A:", tokenAPub.toBase58());
         console.log("Token B:", tokenBPub.toBase58());
 
         // Derive the pool PDA 
         const [poolPDA] = PublicKey.findProgramAddressSync(
           [Buffer.from('pool'), tokenAPub.toBuffer(), tokenBPub.toBuffer()],
-           new anchor.web3.PublicKey(PROGRAM_ID)
+           new PublicKey(PROGRAM_ID)
         );
         
         const [tokenAVault] = PublicKey.findProgramAddressSync(
@@ -84,7 +86,7 @@ export async function handleInitPool(
 
         // Call the on-chain initialize_pool instruction
         const txSig = await program.methods
-        .initializePool(new anchor.BN(10))
+        .initializePool(new BN(10))
         .accounts({
             pool: poolPDA,
             authority: wallet.publicKey,
@@ -93,7 +95,7 @@ export async function handleInitPool(
             tokenAVault: tokenAVault,
             tokenBVault: tokenBVault,
             lpMint: lpMint,
-            systemProgram: anchor.web3.SystemProgram.programId,
+            systemProgram: SystemProgram.programId,
             tokenProgram: TOKEN_PROGRAM_ID,
         })
         .rpc();
@@ -119,29 +121,29 @@ export async function handleAddLiquidity(
     
     try{
         console.log(1);
-        const provider = new anchor.AnchorProvider(
+        const provider = new AnchorProvider(
             connection, 
             wallet, 
-            anchor.AnchorProvider.defaultOptions()
+            AnchorProvider.defaultOptions()
         );
-        const idl = await anchor.Program.fetchIdl(PROGRAM_ID, provider);
+        const idl = await Program.fetchIdl(PROGRAM_ID, provider);
         if (!idl) throw new Error("Failed to fetch IDL");
         console.log(2);
 
-        const program = new anchor.Program(idl, provider);
+        const program = new Program(idl, provider);
 
         console.log(3);
 
         // Validate addresses
-        const tokenAPub = new anchor.web3.PublicKey(tokenA);
-        const tokenBPub = new anchor.web3.PublicKey(tokenB);
+        const tokenAPub = new PublicKey(tokenA);
+        const tokenBPub = new PublicKey(tokenB);
         console.log("Token A:", tokenAPub.toBase58());
         console.log("Token B:", tokenBPub.toBase58());
 
         // Derive the pool PDA 
         const [poolPDA] = PublicKey.findProgramAddressSync(
           [Buffer.from('pool'), tokenAPub.toBuffer(), tokenBPub.toBuffer()],
-           new anchor.web3.PublicKey(PROGRAM_ID)
+           new PublicKey(PROGRAM_ID)
         );
         console.log('Pool PDA:', poolPDA.toBase58());
 
@@ -175,7 +177,7 @@ export async function handleAddLiquidity(
 
         // Call the on-chain add_liquidity instruction
         const txSig = await program.methods
-        .addLiquidity(new anchor.BN(amountA), new anchor.BN(amountB))
+        .addLiquidity(new BN(amountA), new BN(amountB))
         .accounts({
             pool: poolPDA,
             user: wallet.publicKey,
@@ -209,25 +211,25 @@ export async function handleRemoveLiquidity(
     if (!wallet || !wallet.publicKey) throw new Error("Wallet not connected");
     
     try{
-        const provider = new anchor.AnchorProvider(
+        const provider = new AnchorProvider(
             connection, 
             wallet,
-            anchor.AnchorProvider.defaultOptions()
+            AnchorProvider.defaultOptions()
         );
-        const idl = await anchor.Program.fetchIdl(PROGRAM_ID, provider);
+        const idl = await Program.fetchIdl(PROGRAM_ID, provider);
         if (!idl) throw new Error("Failed to fetch IDL");
-        const program = new anchor.Program(idl, provider);
+        const program = new Program(idl, provider);
 
         // Validate addresses
-        const tokenAPub = new anchor.web3.PublicKey(tokenA);
-        const tokenBPub = new anchor.web3.PublicKey(tokenB);
+        const tokenAPub = new PublicKey(tokenA);
+        const tokenBPub = new PublicKey(tokenB);
         console.log("Token A:", tokenAPub.toBase58());
         console.log("Token B:", tokenBPub.toBase58());
 
         // Derive the pool PDA 
         const [poolPDA] = PublicKey.findProgramAddressSync(
           [Buffer.from('pool'), tokenAPub.toBuffer(), tokenBPub.toBuffer()],
-           new anchor.web3.PublicKey(PROGRAM_ID)
+           new PublicKey(PROGRAM_ID)
         );
         console.log('Pool PDA:', poolPDA.toBase58());
 
@@ -254,7 +256,7 @@ export async function handleRemoveLiquidity(
 
         // Call the on-chain remove_liquidity instruction
         const txSig = await program.methods
-        .removeLiquidity(new anchor.BN(amountLP))
+        .removeLiquidity(new BN(amountLP))
         .accounts({
             pool: poolPDA,
             user: wallet.publicKey,
@@ -290,19 +292,19 @@ export async function handleSwapTokens(
     if (!wallet || !wallet.publicKey) throw new Error("Wallet not connected");
     
     try{
-        const provider = new anchor.AnchorProvider(
+        const provider = new AnchorProvider(
             connection, 
             wallet,
-            anchor.AnchorProvider.defaultOptions()
+            AnchorProvider.defaultOptions()
         );
-        const idl = await anchor.Program.fetchIdl(PROGRAM_ID, provider);
+        const idl = await Program.fetchIdl(PROGRAM_ID, provider);
         if (!idl) throw new Error("Failed to fetch IDL");
-        const program = new anchor.Program(idl, provider);
+        const program = new Program(idl, provider);
 
         // Validate addresses
-        const tokenAPub = new anchor.web3.PublicKey(tokenA);
-        const tokenBPub = new anchor.web3.PublicKey(tokenB);
-        const inputTokenPub = new anchor.web3.PublicKey(inputToken);
+        const tokenAPub = new PublicKey(tokenA);
+        const tokenBPub = new PublicKey(tokenB);
+        const inputTokenPub = new PublicKey(inputToken);
 
         console.log("Token A:", tokenAPub.toBase58());
         console.log("Token B:", tokenBPub.toBase58());
@@ -312,7 +314,7 @@ export async function handleSwapTokens(
         // Derive the pool PDA 
         const [poolPDA] = PublicKey.findProgramAddressSync(
           [Buffer.from('pool'), tokenAPub.toBuffer(), tokenBPub.toBuffer()],
-           new anchor.web3.PublicKey(PROGRAM_ID)
+           new PublicKey(PROGRAM_ID)
         );
         console.log('Pool PDA:', poolPDA.toBase58());
 
@@ -348,7 +350,7 @@ export async function handleSwapTokens(
 
         // Call the on-chain add_liquidity instruction
         const txSig = await program.methods
-        .swap(inputTokenPub, new anchor.BN(amountSwapIn), new anchor.BN(amountMinSwapOut))
+        .swap(inputTokenPub, new BN(amountSwapIn), new BN(amountMinSwapOut))
         .accounts({
             pool: poolPDA,
             user: wallet.publicKey,
