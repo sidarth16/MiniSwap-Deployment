@@ -1,11 +1,15 @@
 'use client';
 
-import { Connection, PublicKey, Transaction, SystemProgram } from "@solana/web3.js";
+import { Connection, PublicKey, SystemProgram } from "@solana/web3.js";
+
 import type { AnchorWallet } from "@solana/wallet-adapter-react";
-import { Program, AnchorProvider, BN } from "@coral-xyz/anchor";
+
+import type {AnchorProvider} from "@coral-xyz/anchor";
+// import { Program, AnchorProvider, BN } from "@coral-xyz/anchor";
+
 import * as estimate from "@/lib/solana/estimate"
 
-import { TOKEN_PROGRAM_ID, getAssociatedTokenAddress, createAssociatedTokenAccountInstruction } from "@solana/spl-token";
+// import { TOKEN_PROGRAM_ID, getAssociatedTokenAddress, createAssociatedTokenAccountInstruction } from "@solana/spl-token";
 
 const DEVNET_URL = 'https://api.devnet.solana.com';
 const PROGRAM_ID = "FkFy7DjX1fJe4fUqxkeUnGtkd4rL46769HE3iSwVjoYJ"
@@ -18,16 +22,19 @@ const connection = new Connection(DEVNET_URL, 'confirmed');
 --------------------------------- */
 
 async function getOrCreateATA(mint: PublicKey, owner: PublicKey, provider: AnchorProvider) {
-  const ata = await getAssociatedTokenAddress(mint, owner);
-  const accountInfo = await provider.connection.getAccountInfo(ata);
-  if (!accountInfo) {
-    // Create ATA if not exists
-    const tx = new Transaction().add(
-      createAssociatedTokenAccountInstruction(owner, ata, owner, mint)
-    );
-    await provider.sendAndConfirm(tx);
-  }
-  return ata;
+    const {Transaction} = await import("@solana/web3.js");
+    const {getAssociatedTokenAddress, createAssociatedTokenAccountInstruction } = await import("@solana/spl-token");
+
+    const ata = await getAssociatedTokenAddress(mint, owner);
+    const accountInfo = await provider.connection.getAccountInfo(ata);
+    if (!accountInfo) {
+        // Create ATA if not exists
+        const tx = new Transaction().add(
+        createAssociatedTokenAccountInstruction(owner, ata, owner, mint)
+        );
+        await provider.sendAndConfirm(tx);
+    }
+    return ata;
 }
 
 export async function handleInitPool(
@@ -35,10 +42,12 @@ export async function handleInitPool(
     tokenB: string,
     wallet: AnchorWallet,
 ) {
+    const {AnchorProvider, Program, BN} = await import("@coral-xyz/anchor");
+    const {TOKEN_PROGRAM_ID} = await import("@solana/spl-token");
+
     if (!wallet || !wallet.publicKey) throw new Error("Wallet not connected");
     
     try{
-        console.log(1);
         const provider = new AnchorProvider(
             connection, 
             wallet, 
@@ -46,11 +55,9 @@ export async function handleInitPool(
         );
         const idl = await Program.fetchIdl(PROGRAM_ID, provider);
         if (!idl) throw new Error("Failed to fetch IDL");
-        console.log(2);
 
         const program = new Program(idl, provider);
 
-        console.log(3);
 
         // Validate addresses
         const tokenAPub = new PublicKey(tokenA);
@@ -117,10 +124,12 @@ export async function handleAddLiquidity(
     amountB: number,
     wallet: AnchorWallet
 ) {
+    const {AnchorProvider, Program, BN} = await import("@coral-xyz/anchor");
+    const {TOKEN_PROGRAM_ID} = await import("@solana/spl-token");
+
     if (!wallet || !wallet.publicKey) throw new Error("Wallet not connected");
     
     try{
-        console.log(1);
         const provider = new AnchorProvider(
             connection, 
             wallet, 
@@ -128,11 +137,9 @@ export async function handleAddLiquidity(
         );
         const idl = await Program.fetchIdl(PROGRAM_ID, provider);
         if (!idl) throw new Error("Failed to fetch IDL");
-        console.log(2);
 
         const program = new Program(idl, provider);
 
-        console.log(3);
 
         // Validate addresses
         const tokenAPub = new PublicKey(tokenA);
@@ -208,6 +215,9 @@ export async function handleRemoveLiquidity(
     amountLP: number,
     wallet: AnchorWallet,
 ) {
+    const {AnchorProvider, Program, BN} = await import("@coral-xyz/anchor");
+    const {TOKEN_PROGRAM_ID} = await import("@solana/spl-token");
+
     if (!wallet || !wallet.publicKey) throw new Error("Wallet not connected");
     
     try{
@@ -289,6 +299,9 @@ export async function handleSwapTokens(
     amountMinSwapOut: number,
     wallet: AnchorWallet,
 ) {
+    const {AnchorProvider, Program, BN} = await import("@coral-xyz/anchor");
+    const {TOKEN_PROGRAM_ID} = await import("@solana/spl-token");
+
     if (!wallet || !wallet.publicKey) throw new Error("Wallet not connected");
     
     try{

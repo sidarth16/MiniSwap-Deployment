@@ -1,25 +1,27 @@
 'use client';
 
-import {BN} from "@coral-xyz/anchor";
+// import type {BN} from "@coral-xyz/anchor";
 
 function scaleLiquidityAmounts(
-  amountA: BN | number,
-  amountB: BN | number,
+  amountA: bigint,
+  amountB: bigint,
   decimalsA: number,
   decimalsB: number
-): { scaledA: BN; scaledB: BN } {
-  const bnA = BN.isBN(amountA) ? amountA : new BN(amountA);
-  const bnB = BN.isBN(amountB) ? amountB : new BN(amountB);
+): { scaledA: bigint; scaledB: bigint } {
 
-  const lpDecimals = new BN(10).pow(new BN(6));  //10^6
+  // const bnA = BN.isBN(amountA) ? amountA : new BN(amountA);
+  // const bnB = BN.isBN(amountB) ? amountB : new BN(amountB);
 
-  const scaledA = bnA
-    .mul(lpDecimals)
-    .div(new BN(10).pow(new BN(decimalsA)));
+  const lpDecimals = BigInt(10)**BigInt(6);  //10^6
 
-  const scaledB = bnB
-    .mul(lpDecimals)
-    .div(new BN(10).pow(new BN(decimalsB)));
+  const scaledA =
+    (amountA * lpDecimals) /
+    (BigInt(10) ** BigInt(decimalsA));
+
+  const scaledB =
+    (amountB * lpDecimals) /
+    (BigInt(10) ** BigInt(decimalsB));
+
   return { scaledA, scaledB };
 }
 
@@ -34,8 +36,8 @@ export function estimateLpToMint(
 
 ): bigint {
   const { scaledA, scaledB } = scaleLiquidityAmounts(
-    new BN(amountA.toString()),
-    new BN(amountB.toString()),
+    amountA,
+    amountB,
     decimalA,
     decimalB,
   );
@@ -47,7 +49,7 @@ export function estimateLpToMint(
   amountB = BigInt(scaledB.toString());
 
   console.log("Vault A:", vaultA.toString());
-  console.log("Vault B:", vaultA.toString());
+  console.log("Vault B:", vaultB.toString());
   console.log("LP Supply:", supplyLP.toString());
 
 
@@ -69,7 +71,7 @@ export function estimateWithdrawTokenAmounts(
 ) {
 
   console.log("Vault A:", vaultA.toString());
-  console.log("Vault B:", vaultA.toString());
+  console.log("Vault B:", vaultB.toString());
   console.log("LP Supply:", supplyLP.toString());
 
   const amountA = (vaultA * amountLpBurn) / supplyLP;

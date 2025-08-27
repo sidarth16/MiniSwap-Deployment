@@ -1,10 +1,10 @@
 'use client';
 
 import { Connection, PublicKey } from "@solana/web3.js";
-import { Program, AnchorProvider } from "@coral-xyz/anchor";
+// import { Program, AnchorProvider } from "@coral-xyz/anchor";
 
-import {getMint } from "@solana/spl-token";
-import { AnchorWallet } from "@solana/wallet-adapter-react";
+// import {getMint } from "@solana/spl-token";
+import type { AnchorWallet } from "@solana/wallet-adapter-react";
 
 const DEVNET_URL = 'https://api.devnet.solana.com';
 const PROGRAM_ID = "FkFy7DjX1fJe4fUqxkeUnGtkd4rL46769HE3iSwVjoYJ"
@@ -18,6 +18,7 @@ const connection = new Connection(DEVNET_URL, 'confirmed');
  */
 export async function isValidSolanaTokenAddress(addr: string): Promise<boolean> {
   try {
+    const {getMint} = await import("@solana/spl-token");
     const pubkey = new PublicKey(addr); // throws if invalid
     await getMint(connection, pubkey); //throw if the account doesn't exist OR isn't a mint
     return true;
@@ -29,6 +30,7 @@ export async function isValidSolanaTokenAddress(addr: string): Promise<boolean> 
 export async function checkPoolOnDevnet(tokenA: string, tokenB: string) {
   // Validate token addresses
   try {
+
     const tokenAPub = new PublicKey(tokenA);
     const tokenBPub = new PublicKey(tokenB);
 
@@ -52,7 +54,10 @@ export async function checkPoolOnDevnet(tokenA: string, tokenB: string) {
 }
 
 export async function getPoolReservesAndSupply(tokenA: string, tokenB: string) {
-  try {
+  try {  
+
+    const {AnchorProvider, Program} = await import("@coral-xyz/anchor");
+
     const tokenAPub = new PublicKey(tokenA);
     const tokenBPub = new PublicKey(tokenB);
     const programId = new PublicKey(PROGRAM_ID);
