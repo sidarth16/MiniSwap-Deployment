@@ -7,8 +7,6 @@ import type { AnchorWallet } from "@solana/wallet-adapter-react";
 const DEVNET_URL = 'https://api.devnet.solana.com';
 const PROGRAM_ID = "FkFy7DjX1fJe4fUqxkeUnGtkd4rL46769HE3iSwVjoYJ"
 
-
-
 /**
  * Check whether a given address is a valid SPL token mint on Solana Devnet.
  * Returns true if the address exists and is a token mint.
