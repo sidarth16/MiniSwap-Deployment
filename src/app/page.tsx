@@ -1,5 +1,4 @@
 'use client';
-import { Suspense } from "react";
 import { useState, useEffect } from 'react';
 import { useAnchorWallet } from "@solana/wallet-adapter-react";
 
@@ -80,7 +79,7 @@ function HomeInfoForm({poolStatus,  tokenA,  tokenB}: {poolStatus: -1 | 0 | 1 | 
         console.error("Failed to fetch reserves:", e);
       }
     })();
-  }, [tokenA, tokenB]);
+  }, [tokenA, tokenB, poolStatus]);
   // if (!reserves?.tokenADecimals || !reserves?.tokenBDecimals){
   //   return (<div>Loading Home...</div>)
   // }
@@ -169,7 +168,7 @@ function AddLiquidityForm(
         console.error("Failed to fetch reserves:", e);
       }
     })();
-  }, [tokenA, tokenB]);
+  }, [tokenA, tokenB, poolStatus]);
 
   // auto-fill amountB when amountA changes
   useEffect(() => {
@@ -312,7 +311,7 @@ function RemoveLiquidityForm({handleAction,  poolStatus,  tokenA,  tokenB,  amou
         console.error("Failed to fetch reserves:", e);
       }
     })();
-  }, [tokenA, tokenB]);
+  }, [tokenA, tokenB, poolStatus]);
 
   // Estimate LP tokens to be minted
   useEffect(() => {
@@ -413,7 +412,7 @@ function SwapTokensForm({handleAction,  poolStatus,  tokenA,  tokenB,  amountSwa
         console.error("Failed to fetch reserves:", e);
       }
     })();
-  }, [tokenA, tokenB]);
+  }, [tokenA, tokenB, poolStatus]);
 
   // Estimate LP tokens to be minted
   useEffect(() => {
