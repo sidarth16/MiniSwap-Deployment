@@ -66,7 +66,8 @@ export async function getPoolReservesAndSupply(tokenA: string, tokenB: string) {
     const program = new anchor.Program(idl, provider);
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const pool = await (program.account as any).account.pool.fetch(poolPDA);
+    const pool = await (program.account as any).pool.fetch(poolPDA);
+    console.log('pool fetched')
 
     const tokenADecimals = pool.tokenADecimals;
     const tokenBDecimals = pool.tokenBDecimals;
@@ -78,6 +79,7 @@ export async function getPoolReservesAndSupply(tokenA: string, tokenB: string) {
     return { vaultA, vaultB, supplyLP, tokenADecimals, tokenBDecimals };
   }
   catch (err) {
+    console.error("Fetch Reserves error:", err);
     return null;
   }
 }
