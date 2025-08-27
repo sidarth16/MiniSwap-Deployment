@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useAnchorWallet } from "@solana/wallet-adapter-react";
 
-import {getPoolReservesAndSupply, isValidSolanaTokenAddress, checkPoolOnDevnet} from "@/lib/solana/utils"
+import { isValidSolanaTokenAddress, checkPoolOnDevnet} from "@/lib/solana/utils"
 // import {estimateLpToMint, estimateWithdrawTokenAmounts, estimateSwappedTokenOut} from "@/lib/solana/estimate"
 // import { handleInitPool, handleAddLiquidity, handleRemoveLiquidity, handleSwapTokens} from "@/lib/solana/handlers"
 
