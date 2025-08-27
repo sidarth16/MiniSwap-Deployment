@@ -1,10 +1,8 @@
-'use client';
-
 import { Connection, PublicKey } from "@solana/web3.js";
 // import { Program, AnchorProvider } from "@coral-xyz/anchor";
 
 // import {getMint } from "@solana/spl-token";
-import type { AnchorWallet } from "@solana/wallet-adapter-react";
+// import type { AnchorWallet } from "@solana/wallet-adapter-react";
 
 const DEVNET_URL = 'https://api.devnet.solana.com';
 const PROGRAM_ID = "FkFy7DjX1fJe4fUqxkeUnGtkd4rL46769HE3iSwVjoYJ"
@@ -53,42 +51,42 @@ export async function checkPoolOnDevnet(tokenA: string, tokenB: string) {
   }
 }
 
-export async function getPoolReservesAndSupply(tokenA: string, tokenB: string) {
-  try {  
+// export async function getPoolReservesAndSupply(tokenA: string, tokenB: string) {
+//   try {  
 
-    const {AnchorProvider, Program} = await import("@coral-xyz/anchor");
+//     const {AnchorProvider, Program} = await import("@coral-xyz/anchor");
 
-    const tokenAPub = new PublicKey(tokenA);
-    const tokenBPub = new PublicKey(tokenB);
-    const programId = new PublicKey(PROGRAM_ID);
+//     const tokenAPub = new PublicKey(tokenA);
+//     const tokenBPub = new PublicKey(tokenB);
+//     const programId = new PublicKey(PROGRAM_ID);
 
-    const [poolPDA] = PublicKey.findProgramAddressSync(
-      [Buffer.from("pool"), tokenAPub.toBuffer(), tokenBPub.toBuffer()],
-      programId
-    );
+//     const [poolPDA] = PublicKey.findProgramAddressSync(
+//       [Buffer.from("pool"), tokenAPub.toBuffer(), tokenBPub.toBuffer()],
+//       programId
+//     );
 
-    const idl = await Program.fetchIdl(programId, { connection });
-    if (!idl) throw new Error("Failed to fetch IDL");
-    const provider = new AnchorProvider(
-      connection, {} as AnchorWallet, AnchorProvider.defaultOptions()
-    );
-    const program = new Program(idl, provider);
+//     const idl = await Program.fetchIdl(programId, { connection });
+//     if (!idl) throw new Error("Failed to fetch IDL");
+//     const provider = new AnchorProvider(
+//       connection, {} as AnchorWallet, AnchorProvider.defaultOptions()
+//     );
+//     const program = new Program(idl, provider);
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const pool = await (program.account as any).pool.fetch(poolPDA);
-    console.log('pool fetched')
+//     // eslint-disable-next-line @typescript-eslint/no-explicit-any
+//     const pool = await (program.account as any).pool.fetch(poolPDA);
+//     console.log('pool fetched')
 
-    const tokenADecimals = pool.tokenADecimals;
-    const tokenBDecimals = pool.tokenBDecimals;
+//     const tokenADecimals = pool.tokenADecimals;
+//     const tokenBDecimals = pool.tokenBDecimals;
 
-    const vaultA = BigInt((await connection.getTokenAccountBalance(pool.tokenAVault)).value.amount);
-    const vaultB = BigInt((await connection.getTokenAccountBalance(pool.tokenBVault)).value.amount);
-    const supplyLP = BigInt((await connection.getTokenSupply(pool.lpMint)).value.amount);
+//     const vaultA = BigInt((await connection.getTokenAccountBalance(pool.tokenAVault)).value.amount);
+//     const vaultB = BigInt((await connection.getTokenAccountBalance(pool.tokenBVault)).value.amount);
+//     const supplyLP = BigInt((await connection.getTokenSupply(pool.lpMint)).value.amount);
 
-    return { vaultA, vaultB, supplyLP, tokenADecimals, tokenBDecimals };
-  }
-  catch (err) {
-    console.error("Fetch Reserves error:", err);
-    return null;
-  }
-}
+//     return { vaultA, vaultB, supplyLP, tokenADecimals, tokenBDecimals };
+//   }
+//   catch (err) {
+//     console.error("Fetch Reserves error:", err);
+//     return null;
+//   }
+// }
