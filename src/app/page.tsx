@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useAnchorWallet } from "@solana/wallet-adapter-react";
 
-// import {getPoolReservesAndSupply, isValidSolanaTokenAddress, checkPoolOnDevnet} from "@/lib/solana/utils"
+import {getPoolReservesAndSupply, isValidSolanaTokenAddress, checkPoolOnDevnet} from "@/lib/solana/utils"
 // import {estimateLpToMint, estimateWithdrawTokenAmounts, estimateSwappedTokenOut} from "@/lib/solana/estimate"
 // import { handleInitPool, handleAddLiquidity, handleRemoveLiquidity, handleSwapTokens} from "@/lib/solana/handlers"
 
@@ -637,7 +637,7 @@ export default function HomePage() {
   const [activeForm, setActiveForm] = useState< 'home' | 'add' | 'remove' | 'swap' | null>(null);
   const [tokenA, setTokenA] = useState('H68y5nKjyc8ESB6dn7syQ1FWn1axU7DYDB5VE9MTAU2c');
   const [tokenB, setTokenB] = useState('7ffSz8Yyi7Zy1nLR7L7WSAUH7LcWt9uX1tMvtijD4fqX');
-  const [poolStatus, setPoolStatus] = useState<-1 | 0 | 1 | null>(1);
+  const [poolStatus, setPoolStatus] = useState<-1 | 0 | 1 | null>(null);
   
   const [error, setError] = useState<string | null>(null);
   const [txSig, setTxSig] = useState<string | null>(null); 
@@ -653,26 +653,26 @@ export default function HomePage() {
   const formParam = searchParams.get("form");
 
   // Check pool existence
-  // useEffect(() => {
-  //   const runCheck = async () => {
-  //     try {
-  //       if (!tokenA || !tokenB) {
-  //         setPoolStatus(null); // not checked yet
-  //         return;
-  //       }
-  //       if (! await isValidSolanaTokenAddress(tokenA) || ! await isValidSolanaTokenAddress(tokenB)) {
-  //         setPoolStatus(-1);
-  //         return;
-  //       }
-  //       const exists = await checkPoolOnDevnet(tokenA, tokenB);
-  //       setPoolStatus(exists ? 1 : 0);
-  //     } catch (err) {
-  //       console.error(err);
-  //       setPoolStatus(0);
-  //     }
-  //   };
-  //   runCheck();
-  // }, [tokenA, tokenB]);
+  useEffect(() => {
+    const runCheck = async () => {
+      try {
+        if (!tokenA || !tokenB) {
+          setPoolStatus(null); // not checked yet
+          return;
+        }
+        if (! await isValidSolanaTokenAddress(tokenA) || ! await isValidSolanaTokenAddress(tokenB)) {
+          setPoolStatus(-1);
+          return;
+        }
+        const exists = await checkPoolOnDevnet(tokenA, tokenB);
+        setPoolStatus(exists ? 1 : 0);
+      } catch (err) {
+        console.error(err);
+        setPoolStatus(0);
+      }
+    };
+    runCheck();
+  }, [tokenA, tokenB]);
 
   // set form from header navigation
   useEffect(() => {
