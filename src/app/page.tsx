@@ -19,8 +19,8 @@ export default function HomePage() {
   const wallet = useAnchorWallet();
   const connected = !!wallet?.publicKey;
 
-  const [tokenA, setTokenA] = useState("H68y5nKjyc8ESB6dn7syQ1FWn1axU7DYDB5VE9MTAU2c");
-  const [tokenB, setTokenB] = useState("6v1CkZ2w3uybFfkGf5pNE7SWV2QDL6ok5Z8U6Tpa311o");
+  const [tokenA, setTokenA] = useState("");
+  const [tokenB, setTokenB] = useState("");
 
   const [error, setError] = useState<string | null>(null);
   const [txSig, setTxSig] = useState<string | null>(null); 
